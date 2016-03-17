@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import json
 import hashlib
 import os
@@ -7,7 +7,7 @@ import pfusx
 
 app = Flask(__name__)
 
-@app.route('/compile/pfusx', methods=['POST'])
+@app.route('/compile/pfusx', methods=['GET', 'POST'])
 def compile(text=None):
     """
     Send provided code to the designated compiler and outputs a JSON
@@ -31,20 +31,19 @@ def compile(text=None):
     Errors can be output to the user and vary by compiler. They're often
     related to specific Mix.Bio form fields.
     """
-
-    text = text or request.form.pop('input', '').strip().split('\n')
+    text = request.args.get('input').strip().split('\n')
 
     if not text:
-        return json.dumps({
+        return "handle_response("+json.dumps({
             'success': False,
             'errors': ["No input provided."]
-        })
+        })+")"
 
     # Compile the protocol, return any errors.
     try:
-        protocol = pfusx.compile(text)
+        protocol = pfusx.compile(*text)
     except Exception as e:
-        return {'success': False, 'errors': [str(e)]}
+        return "handle_response("+json.dumps({'success': False, 'errors': [str(e)]})+")"
 
     description = json.loads(protocol)["info"]["description"]
 
@@ -58,11 +57,11 @@ def compile(text=None):
 
     output = {
         "success": True,
-        "filename": fname,
+        "filename": 'http://api.mix.bio/static/protocols/'+fname,
         "return_data": {"description": description} 
     }
 
-    return json.dumps(output)
+    return "handle_response("+json.dumps(output)+")"
 
 
 if __name__ == '__main__':
