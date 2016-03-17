@@ -2,8 +2,8 @@ FROM ubuntu:latest
 
 RUN apt-get update -y
 RUN apt-get install -y python3-pip
-RUN pip install --upgrade pip
-RUN pip install flask
+RUN pip3 install --upgrade pip
+RUN pip3 install flask
 
 ENV APP_HOME /var/www/
 RUN mkdir $APP_HOME
@@ -14,4 +14,4 @@ ADD . $APP_HOME
 
 EXPOSE 8080
 
-ENTRYPOINT python app.py
+ENTRYPOINT python3 app.py
