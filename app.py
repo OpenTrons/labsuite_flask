@@ -63,3 +63,7 @@ def compile(text=None):
     }
 
     return json.dumps(output)
+
+
+if __name__ == '__main__':
+    app.run(debug=False, port=8080)
