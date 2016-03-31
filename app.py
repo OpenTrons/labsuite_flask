@@ -3,7 +3,7 @@ import json
 import hashlib
 import os
 
-import pfusx
+from lasuite.compilers import pfusx
 
 app = Flask(__name__)
 
