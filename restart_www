@@ -1,0 +1,15 @@
+# /bin/bash
+DOCKER_NAME=${DOCKER_NAME:-labsuite_flask}
+DOCKER_PORT=${DOCKER_PORT:-8080}
+echo "Checking $DOCKER_NAME..."
+STATUS="$(curl -Is -m 10 127.0.0.1 | head -1 | perl -pe 'chomp')"
+# So we're actually *looking* for a 404 from this app right now, otherwise it's broken.
+if [[ "$STATUS" != *"HTTP/1.0 404 NOT FOUND"* ]]; then
+        echo "Rebooting $DOCKER_NAME (internal port $DOCKER_PORT)."
+        docker kill "$DOCKER_NAME"
+        docker rm "$DOCKER_NAME"
+        docker run -d -p 80:"$DOCKER_PORT" -P --restart=always --name "$DOCKER_NAME" "$DOCKER_NAME"
+else
+        # Again, we're LOOKING for a 404.
+        echo "Situation Normal: 404."
+fi
