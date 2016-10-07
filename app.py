@@ -2,10 +2,12 @@ from flask import Flask, request
 import json
 import hashlib
 import os
-
 from labsuite.compilers import pfusx
+from OpenSSL import SSL
 
 app = Flask(__name__)
+
+context = ('certificate.crt', 'private.key')
 
 @app.route('/compile/pfusx', methods=['GET', 'POST'])
 def compile(text=None):
@@ -57,7 +59,7 @@ def compile(text=None):
 
     output = {
         "success": True,
-        "filename": 'http://api.mix.bio/static/protocols/'+fname,
+        "filename": 'https://api.mix.bio/static/protocols/'+fname,
         "return_data": {"description": description} 
     }
 
@@ -65,4 +67,4 @@ def compile(text=None):
 
 
 if __name__ == '__main__':
-    app.run(debug=False, port=8080, host='0.0.0.0')
+    app.run(debug=True, port=8080, host='0.0.0.0', ssl_context=context, threaded=True) 

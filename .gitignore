@@ -60,3 +60,11 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+certificate.crt
+certificate.pem
+private.key
+
+nohup.out
+
+static/
